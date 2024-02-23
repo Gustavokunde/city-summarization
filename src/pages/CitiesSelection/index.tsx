@@ -1,34 +1,93 @@
 // import { Container } from './styles';
-import axios from "axios";
+import { Autocomplete, debounce, TextField } from "@mui/material";
 import { useFormik } from "formik";
+import { useCallback, useEffect, useState } from "react";
+import { array, string } from "yup";
 import { config } from "../../config/config";
+import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
 
 const CitiesSelection = () => {
+  const [citiesList, setCitiesList] = useState<Array<string>>([]);
+  const [focusedFieldIndex, setFocusedFieldIndex] = useState<number | null>(
+    null
+  );
   const formik = useFormik({
-    initialValues: {
-      cities: [...Array(config.numberOfCityOptions)],
-    },
+    initialValues: [...Array(config.numberOfCityOptions).fill("")],
+    validateOnChange: true,
+    validationSchema: array()
+      .min(config.numberOfCityOptions)
+      .of(
+        string()
+          .notRequired()
+          .test(
+            "test-city",
+            "City name must be unique",
+            function (value, { parent }) {
+              if (value) {
+                return (
+                  parent.filter((city: string) => city === value).length === 1
+                );
+              } else return true;
+            }
+          )
+      ),
     onSubmit: () => {},
   });
 
-  axios
-    .get(
-      `http://geodb-free-service.wirefreethought.com/v1/geo/countries/${config.countryCode}/places?limit=5&offset=0&types=CITY&namePrefix=New`
-    )
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => console.log(err));
+  useEffect(() => {
+    const inputValue =
+      formik.values[focusedFieldIndex as keyof typeof formik.values];
+    if (focusedFieldIndex !== null && inputValue)
+      findCitiesByName(inputValue)
+        .then((cities) => {
+          setCitiesList(cities);
+        })
+        .catch((err) => console.log(err));
+  }, [
+    focusedFieldIndex,
+    formik.values[focusedFieldIndex as keyof typeof formik.values],
+  ]);
+
+  const debounceInputSearch = useCallback(
+    debounce((name, value) => {
+      console.log(value, name);
+      formik.setFieldValue(name, value);
+    }, 300),
+    []
+  );
+
+  const onInputBlur = useCallback(() => {
+    setCitiesList([]);
+  }, []);
+
+  console.log(formik.errors);
 
   return (
     <div>
-      {formik.values.cities.map((_, index) => (
-        <input
-          name={`cities[${index}]`}
-          id={`cities[${index}]`}
-          onChange={formik.handleChange}
-        />
-      ))}
+      {formik.values.map((_, index) => {
+        const name = `cities[${index}]`;
+        return (
+          <Autocomplete
+            disablePortal
+            key={name}
+            id={name}
+            options={citiesList}
+            onInputChange={(_, value) => debounceInputSearch(index, value)}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                helperText={formik.errors[index]}
+                error={formik.errors[index]}
+                name={name}
+                label="Type a city in the US"
+                onFocus={() => setFocusedFieldIndex(index)}
+                onBlur={onInputBlur}
+              />
+            )}
+          />
+        );
+      })}
     </div>
   );
 };
