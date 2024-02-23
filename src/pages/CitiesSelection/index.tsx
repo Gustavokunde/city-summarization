@@ -6,6 +6,8 @@ import { array, string } from "yup";
 import { config } from "../../config/config";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
 
+// getCitiesDetails();
+
 const CitiesSelection = () => {
   const [citiesList, setCitiesList] = useState<Array<string>>([]);
   const [focusedFieldIndex, setFocusedFieldIndex] = useState<number | null>(
@@ -47,6 +49,7 @@ const CitiesSelection = () => {
     focusedFieldIndex,
     formik.values[focusedFieldIndex as keyof typeof formik.values],
   ]);
+  useEffect(() => {}, []);
 
   const debounceInputSearch = useCallback(
     debounce((name, value) => {
@@ -59,8 +62,6 @@ const CitiesSelection = () => {
   const onInputBlur = useCallback(() => {
     setCitiesList([]);
   }, []);
-
-  console.log(formik.errors);
 
   return (
     <div>
@@ -77,8 +78,8 @@ const CitiesSelection = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                helperText={formik.errors[index]}
-                error={formik.errors[index]}
+                helperText={formik.errors[index] as string}
+                error={!!formik.errors[index]}
                 name={name}
                 label="Type a city in the US"
                 onFocus={() => setFocusedFieldIndex(index)}
