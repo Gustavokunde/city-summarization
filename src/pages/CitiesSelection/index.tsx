@@ -1,26 +1,29 @@
 // import { Container } from './styles';
-import { Autocomplete, debounce, TextField } from "@mui/material";
+import { Autocomplete, Button, debounce, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { array, string } from "yup";
 import { config } from "../../config/config";
+import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
-
-// getCitiesDetails();
+import CityDescriptions from "../../templates/CityDescriptions";
 
 const CitiesSelection = () => {
   const [citiesList, setCitiesList] = useState<Array<string>>([]);
   const [focusedFieldIndex, setFocusedFieldIndex] = useState<number | null>(
     null
   );
+
+  const [citiesDetails, setCitiesDetails] = useState([]);
   const formik = useFormik({
     initialValues: [...Array(config.numberOfCityOptions).fill("")],
     validateOnChange: true,
+    validateOnMount: false,
     validationSchema: array()
       .min(config.numberOfCityOptions)
       .of(
         string()
-          .notRequired()
+          .required("Field is required")
           .test(
             "test-city",
             "City name must be unique",
@@ -33,7 +36,12 @@ const CitiesSelection = () => {
             }
           )
       ),
-    onSubmit: () => {},
+    onSubmit: (values) => {
+      getCitiesDetails(values).then((response) => {
+        console.log(response);
+        setCitiesDetails(response);
+      });
+    },
   });
 
   useEffect(() => {
@@ -49,7 +57,6 @@ const CitiesSelection = () => {
     focusedFieldIndex,
     formik.values[focusedFieldIndex as keyof typeof formik.values],
   ]);
-  useEffect(() => {}, []);
 
   const debounceInputSearch = useCallback(
     debounce((name, value) => {
@@ -64,23 +71,25 @@ const CitiesSelection = () => {
   }, []);
 
   return (
-    <div>
+    <form onSubmit={formik.handleSubmit}>
       {formik.values.map((_, index) => {
-        const name = `cities[${index}]`;
         return (
           <Autocomplete
             disablePortal
-            key={name}
-            id={name}
+            key={index}
+            id={index.toString()}
             options={citiesList}
             onInputChange={(_, value) => debounceInputSearch(index, value)}
             sx={{ width: 300 }}
             renderInput={(params) => (
               <TextField
                 {...params}
-                helperText={formik.errors[index] as string}
-                error={!!formik.errors[index]}
-                name={name}
+                helperText={
+                  formik.touched[index] && (formik.errors[index] as string)
+                }
+                onBlurCapture={formik.handleBlur}
+                error={formik.touched[index] && !!formik.errors[index]}
+                name={index.toString()}
                 label="Type a city in the US"
                 onFocus={() => setFocusedFieldIndex(index)}
                 onBlur={onInputBlur}
@@ -89,7 +98,12 @@ const CitiesSelection = () => {
           />
         );
       })}
-    </div>
+      <Button type="submit">Enviar</Button>
+
+      {citiesDetails.map((city) => (
+        <CityDescriptions {...city} />
+      ))}
+    </form>
   );
 };
 
