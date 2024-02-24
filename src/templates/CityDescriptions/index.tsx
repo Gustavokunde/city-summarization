@@ -1,15 +1,17 @@
 import GoogleMapReact from "google-map-react";
 import { CityDetails } from "../../store/cities/cities";
+import { MapContainer } from "./styles";
 
 const apiKey = import.meta.env.VITE_APP_GOOGLE_API_KEY;
 
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
-
 const CityDescriptions = ({
-  name,
   description,
-  longitude,
   latitude,
+  longitude,
+  name,
+  population,
+  region,
+  regionCode,
 }: CityDetails) => {
   const defaultProps = {
     center: {
@@ -21,17 +23,20 @@ const CityDescriptions = ({
 
   return (
     <div>
-      <h1>{name}</h1>
+      <h1>
+        {name} - {region} - {regionCode}
+      </h1>
       <p>{description}</p>
-      <div style={{ maxHeight: "100vh", height: 500, width: "100%" }}>
+      <section>
+        <p>Population amount: {population}</p>
+      </section>
+      <MapContainer>
         <GoogleMapReact
           bootstrapURLKeys={{ key: apiKey }}
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
-        >
-          <AnyReactComponent text="My Marker" />
-        </GoogleMapReact>
-      </div>
+        />
+      </MapContainer>
     </div>
   );
 };

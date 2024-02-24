@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { array, object } from "yup";
 import { config } from "../../config/config";
+import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
 import { addCities, CitiesState, CityDetails } from "../../store/cities/cities";
 import {
@@ -59,9 +60,12 @@ const CitiesSelection = () => {
           )
       ),
     onSubmit: (values) => {
-      console.log(values);
       setFetchingCities(true);
-      dispatch(addCities(values));
+      getCitiesDetails(values).then((response) => {
+        setFetchingCities(false);
+        console.log(response);
+        dispatch(addCities(response));
+      });
     },
   });
 

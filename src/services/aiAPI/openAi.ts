@@ -1,10 +1,20 @@
 import OpenAI from "openai";
-import { config } from "../../config/config";
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_APP_AI_API_KEY, // only for test purpose,
   dangerouslyAllowBrowser: true,
 });
+
+const otherCityInformation = [
+  "area",
+  "top attractions",
+  "climate",
+  "cuisine",
+  "culture and history",
+  "transportation",
+  "safety",
+  "local tips and recommendations",
+];
 
 export const getCitiesDetails = async (cities: string[]) => {
   return new Promise(async (resolve, reject) => {
@@ -12,9 +22,11 @@ export const getCitiesDetails = async (cities: string[]) => {
       messages: [
         {
           role: "system",
-          content:
-            `Bring me the details of the provided array of cities from USA such ${config.cityDetails} in a json format with cities split into an array: ` +
-            cities,
+          content: `Bring me some important information and important facts summarized based on the values provided for each city ${JSON.stringify(
+            cities
+          )} in a json format with cities split into an array with all properties provided, a brief description and also this other information in an html string format to be shown in a landpage : ${JSON.stringify(
+            otherCityInformation
+          )} `,
         },
       ],
       temperature: 0.5,
