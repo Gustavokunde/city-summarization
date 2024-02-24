@@ -2,10 +2,12 @@
 import { Autocomplete, Button, debounce, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { array, string } from "yup";
 import { config } from "../../config/config";
 import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
+import { addCities } from "../../store/cities/cities";
 import CityDescriptions from "../../templates/CityDescriptions";
 
 const CitiesSelection = () => {
@@ -13,8 +15,9 @@ const CitiesSelection = () => {
   const [focusedFieldIndex, setFocusedFieldIndex] = useState<number | null>(
     null
   );
+  const dispatch = useDispatch();
 
-  const [citiesDetails, setCitiesDetails] = useState([]);
+  const citiesDetails = useSelector((state) => state.cities);
   const formik = useFormik({
     initialValues: [...Array(config.numberOfCityOptions).fill("")],
     validateOnChange: true,
@@ -38,8 +41,8 @@ const CitiesSelection = () => {
       ),
     onSubmit: (values) => {
       getCitiesDetails(values).then((response) => {
-        console.log(response);
-        setCitiesDetails(response);
+        console.log("trying to add cities");
+        dispatch(addCities(response));
       });
     },
   });
@@ -60,7 +63,6 @@ const CitiesSelection = () => {
 
   const debounceInputSearch = useCallback(
     debounce((name, value) => {
-      console.log(value, name);
       formik.setFieldValue(name, value);
     }, 300),
     []
