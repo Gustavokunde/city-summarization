@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^2.2.1",
     "axios": "^1.6.7",
     "formik": "^2.4.5",
+    "google-map-react": "^2.2.1",
     "openai": "^4.28.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/google-map-react": "^2.1.10",
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "@types/react-redux": "^7.1.33",

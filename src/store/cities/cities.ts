@@ -9,9 +9,13 @@ export interface CitiesState {
 const initialState: CitiesState = { cities: [] };
 
 export interface CityDetails {
-  image: string;
   description: string;
+  latitude: number;
+  longitude: number;
   name: string;
+  population: number;
+  region: string;
+  regionCode: string;
 }
 
 const cityReducer = (

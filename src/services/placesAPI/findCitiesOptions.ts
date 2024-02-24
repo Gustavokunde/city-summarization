@@ -8,7 +8,7 @@ export const findCitiesByName = (name: string) => {
         `http://geodb-free-service.wirefreethought.com/v1/geo/countries/${config.countryCode}/places?limit=5&offset=0&types=CITY&namePrefix=${name}`
       )
       .then((res) => {
-        return resolve(res.data.data.map(({ name }) => name));
+        return resolve(res.data.data);
       })
       .catch((err) => {
         console.log(err);

@@ -1,7 +1,8 @@
 import OpenAI from "openai";
+import { config } from "../../config/config";
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_APP_API_KEY, // only for test purpose,
+  apiKey: import.meta.env.VITE_APP_AI_API_KEY, // only for test purpose,
   dangerouslyAllowBrowser: true,
 });
 
@@ -12,7 +13,7 @@ export const getCitiesDetails = async (cities: string[]) => {
         {
           role: "system",
           content:
-            "Bring me the details of the provided array of cities from USA such as image and description in a json format: " +
+            `Bring me the details of the provided array of cities from USA such ${config.cityDetails} in a json format with cities split into an array: ` +
             cities,
         },
       ],

@@ -9,11 +9,10 @@ import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { array, string } from "yup";
+import { array, object } from "yup";
 import { config } from "../../config/config";
-import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
-import { addCities, CitiesState } from "../../store/cities/cities";
+import { addCities, CitiesState, CityDetails } from "../../store/cities/cities";
 import {
   CitiesChosenSection,
   FormSection,
@@ -21,7 +20,7 @@ import {
 } from "./styles";
 
 const CitiesSelection = () => {
-  const [citiesList, setCitiesList] = useState<Array<string>>([]);
+  const [citiesList, setCitiesList] = useState<Array<CityDetails>>([]);
   const [focusedFieldIndex, setFocusedFieldIndex] = useState<number | null>(
     null
   );
@@ -36,15 +35,15 @@ const CitiesSelection = () => {
   const formik = useFormik({
     initialValues:
       citiesDetails.length > 0
-        ? citiesDetails.map((city) => city.name)
-        : [...Array(config.numberOfCityOptions).fill("")],
+        ? citiesDetails
+        : [...Array(config.numberOfCityOptions).fill({})],
 
     validateOnChange: true,
     validateOnMount: false,
     validationSchema: array()
       .min(config.numberOfCityOptions)
       .of(
-        string()
+        object()
           .required("Field is required")
           .test(
             "test-city",
@@ -52,18 +51,17 @@ const CitiesSelection = () => {
             function (value, { parent }) {
               if (value) {
                 return (
-                  parent.filter((city: string) => city === value).length === 1
+                  parent.filter((city: CityDetails) => city.name === value.name)
+                    .length === 1
                 );
               } else return true;
             }
           )
       ),
     onSubmit: (values) => {
+      console.log(values);
       setFetchingCities(true);
-      getCitiesDetails(values).then((response) => {
-        setFetchingCities(false);
-        dispatch(addCities(response));
-      });
+      dispatch(addCities(values));
     },
   });
 
@@ -82,8 +80,12 @@ const CitiesSelection = () => {
   ]);
 
   const debounceInputSearch = useCallback(
-    debounce((name, value) => {
-      formik.setFieldValue(name, value);
+    debounce((value) => {
+      findCitiesByName(value)
+        .then((cities) => {
+          setCitiesList(cities);
+        })
+        .catch((err) => console.log(err));
     }, 300),
     []
   );
@@ -96,15 +98,19 @@ const CitiesSelection = () => {
     <>
       <FormSection>
         <form onSubmit={formik.handleSubmit}>
-          {formik.values.map((_, index) => {
+          {formik.values.map((city, index) => {
             return (
               <Autocomplete
                 disablePortal
                 key={index}
                 options={citiesList}
-                onInputChange={(_, value) => debounceInputSearch(index, value)}
+                getOptionLabel={(city) => city.name || ""}
                 sx={{ width: 300 }}
-                defaultValue={_}
+                defaultValue={city.name}
+                onChange={(_, value) =>
+                  formik.setFieldValue(index.toString(), value)
+                }
+                onInputChange={(_, value) => debounceInputSearch(value)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
