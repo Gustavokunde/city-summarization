@@ -7,7 +7,6 @@ const initialState: Array<string> = [];
 const cityReducer = (state = initialState, action) => {
   switch (action.type) {
     case "ADD_CITIES":
-      console.log("added cities", action);
       return {
         ...state,
         cities: action.payload,
