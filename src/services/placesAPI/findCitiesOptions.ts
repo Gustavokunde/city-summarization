@@ -12,7 +12,7 @@ export const findCitiesByName = (name: string) => {
       })
       .catch((err) => {
         console.log(err);
-        return reject(error);
+        return reject(err);
       });
   });
 };

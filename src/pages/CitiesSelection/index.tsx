@@ -1,4 +1,3 @@
-// import { Container } from './styles';
 import { Autocomplete, Button, debounce, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
@@ -8,7 +7,7 @@ import { array, string } from "yup";
 import { config } from "../../config/config";
 import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
-import { addCities } from "../../store/cities/cities";
+import { addCities, CitiesState } from "../../store/cities/cities";
 
 const CitiesSelection = () => {
   const [citiesList, setCitiesList] = useState<Array<string>>([]);
@@ -18,9 +17,14 @@ const CitiesSelection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const citiesDetails = useSelector((state) => state.cities);
+  const citiesDetails = useSelector((state: CitiesState) => state.cities);
+
   const formik = useFormik({
-    initialValues: [...Array(config.numberOfCityOptions).fill("")],
+    initialValues:
+      citiesDetails.length > 0
+        ? citiesDetails.map((city) => city.name)
+        : [...Array(config.numberOfCityOptions).fill("")],
+
     validateOnChange: true,
     validateOnMount: false,
     validationSchema: array()
@@ -79,10 +83,10 @@ const CitiesSelection = () => {
           <Autocomplete
             disablePortal
             key={index}
-            id={index.toString()}
             options={citiesList}
             onInputChange={(_, value) => debounceInputSearch(index, value)}
             sx={{ width: 300 }}
+            defaultValue={_}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -91,6 +95,7 @@ const CitiesSelection = () => {
                 }
                 onBlurCapture={formik.handleBlur}
                 error={formik.touched[index] && !!formik.errors[index]}
+                id={index.toString()}
                 name={index.toString()}
                 label="Type a city in the US"
                 onFocus={() => setFocusedFieldIndex(index)}

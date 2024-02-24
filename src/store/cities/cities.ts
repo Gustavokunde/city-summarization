@@ -2,21 +2,31 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-const initialState: Array<string> = [];
+export interface CitiesState {
+  cities: Array<CityDetails>;
+}
 
-const cityReducer = (state = initialState, action) => {
+const initialState: CitiesState = { cities: [] };
+
+export interface CityDetails {
+  image: string;
+  description: string;
+  name: string;
+}
+
+const cityReducer = (
+  state = initialState,
+  action: { type: string; payload: Array<CityDetails> }
+) => {
   switch (action.type) {
     case "ADD_CITIES":
-      return {
-        ...state,
-        cities: action.payload,
-      };
+      return { cities: action.payload };
     default:
       return state;
   }
 };
 
-export const addCities = (cities: object[]) => ({
+export const addCities = (cities: Array<CityDetails>) => ({
   type: "ADD_CITIES",
   payload: cities,
 });
