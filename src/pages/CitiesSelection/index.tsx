@@ -1,4 +1,10 @@
-import { Autocomplete, Button, debounce, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  debounce,
+  Skeleton,
+  TextField,
+} from "@mui/material";
 import { useFormik } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,12 +14,20 @@ import { config } from "../../config/config";
 import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
 import { addCities, CitiesState } from "../../store/cities/cities";
+import {
+  CitiesChosenSection,
+  FormSection,
+  SubmitButtonContent,
+} from "./styles";
 
 const CitiesSelection = () => {
   const [citiesList, setCitiesList] = useState<Array<string>>([]);
   const [focusedFieldIndex, setFocusedFieldIndex] = useState<number | null>(
     null
   );
+
+  const [fetchingCities, setFetchingCities] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -45,7 +59,9 @@ const CitiesSelection = () => {
           )
       ),
     onSubmit: (values) => {
+      setFetchingCities(true);
       getCitiesDetails(values).then((response) => {
+        setFetchingCities(false);
         dispatch(addCities(response));
       });
     },
@@ -77,42 +93,58 @@ const CitiesSelection = () => {
   }, []);
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      {formik.values.map((_, index) => {
-        return (
-          <Autocomplete
-            disablePortal
-            key={index}
-            options={citiesList}
-            onInputChange={(_, value) => debounceInputSearch(index, value)}
-            sx={{ width: 300 }}
-            defaultValue={_}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                helperText={
-                  formik.touched[index] && (formik.errors[index] as string)
-                }
-                onBlurCapture={formik.handleBlur}
-                error={formik.touched[index] && !!formik.errors[index]}
-                id={index.toString()}
-                name={index.toString()}
-                label="Type a city in the US"
-                onFocus={() => setFocusedFieldIndex(index)}
-                onBlur={onInputBlur}
+    <>
+      <FormSection>
+        <form onSubmit={formik.handleSubmit}>
+          {formik.values.map((_, index) => {
+            return (
+              <Autocomplete
+                disablePortal
+                key={index}
+                options={citiesList}
+                onInputChange={(_, value) => debounceInputSearch(index, value)}
+                sx={{ width: 300 }}
+                defaultValue={_}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    helperText={
+                      formik.touched[index] && (formik.errors[index] as string)
+                    }
+                    onBlurCapture={formik.handleBlur}
+                    error={formik.touched[index] && !!formik.errors[index]}
+                    id={index.toString()}
+                    name={index.toString()}
+                    label="Type a city in the US"
+                    onFocus={() => setFocusedFieldIndex(index)}
+                    onBlur={onInputBlur}
+                  />
+                )}
               />
-            )}
-          />
-        );
-      })}
-      <Button type="submit">Enviar</Button>
-
-      {citiesDetails.map((city) => (
-        <Button key={city.name} onClick={() => navigate(`city/${city.name}`)}>
-          {city.name}
-        </Button>
-      ))}
-    </form>
+            );
+          })}
+          <SubmitButtonContent>
+            <Button type="submit" disabled={fetchingCities}>
+              Enviar
+            </Button>
+          </SubmitButtonContent>
+        </form>
+      </FormSection>
+      <CitiesChosenSection>
+        {fetchingCities
+          ? formik.values.map(() => (
+              <Skeleton variant="rectangular" width={200} height={100} />
+            ))
+          : citiesDetails.map((city) => (
+              <Button
+                key={city.name}
+                onClick={() => navigate(`city/${city.name}`)}
+              >
+                {city.name}
+              </Button>
+            ))}
+      </CitiesChosenSection>
+    </>
   );
 };
 
