@@ -8,6 +8,7 @@ const loadGoogleAnalytics = () => {
   const existingScript = document.getElementById("googleAnalytics");
   if (!existingScript) {
     const script = document.createElement("script");
+    script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${
       import.meta.env.VITE_APP_TRACKING_ANALYTICS_ID
     }`;

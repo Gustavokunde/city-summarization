@@ -117,7 +117,7 @@ const CitiesSelection = () => {
               variant="contained"
               color="primary"
             >
-              Enviar
+              Send
             </Button>
           </SubmitButtonContent>
         </form>
