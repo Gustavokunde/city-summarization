@@ -24,7 +24,7 @@ export interface CityDetails {
   culture_history: string;
   transportation: string;
   safety: string;
-  local_tips: Array<string>;
+  local_tips: Array<string> | string;
 }
 
 const cityReducer = (
