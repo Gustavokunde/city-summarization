@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import GoogleMapReact from "google-map-react";
 import { CityDetails } from "../../store/cities/cities";
+
 import {
   AttractionCard,
   DescriptivelySection,
@@ -43,13 +44,13 @@ const CityDescriptions = ({
 
   return (
     <MainContainer>
-      <img src="/src/assets/background_city.svg" />
+      <img src="/background_city.svg" />
       <h1>
         {name} - {region}/{regionCode}
       </h1>
       <div>
         <DescriptivelySection>
-          <img src="/src/assets/city_people.svg" />
+          <img src="/city_people.svg" />
           <h2 style={{ width: 200 }}>
             Population amount is of {population.toLocaleString()} habitants
           </h2>
@@ -101,7 +102,7 @@ const CityDescriptions = ({
           </PopularAttractionsContainer>
         </section>
         <DescriptivelySection>
-          <img src="/src/assets/city_bike.svg" />
+          <img src="/city_bike.svg" />
           <div>
             <h2>Transportation </h2>
             <p>{transportation}</p>
@@ -112,10 +113,10 @@ const CityDescriptions = ({
             <h2>Climate </h2>
             <p>{climate}</p>
           </div>
-          <img src="/src/assets/climate.svg" />
+          <img src="/climate.svg" />
         </DescriptivelySection>
         <DescriptivelySection>
-          <img src="/src/assets/cuisine.svg" />
+          <img src="/cuisine.svg" />
           <div>
             <h2>Cuisine </h2>
             <p>{cuisine}</p>
@@ -126,10 +127,10 @@ const CityDescriptions = ({
             <h2>Culture and history </h2>
             <p>{culture_history}</p>
           </div>
-          <img src="/src/assets/history.svg" />
+          <img src="/history.svg" />
         </DescriptivelySection>
         <DescriptivelySection>
-          <img src="/src/assets/reading.svg" />
+          <img src="/reading.svg" />
           <div>
             <h2>Local tips and recommendantions </h2>
             {typeof local_tips === "string" ? (
@@ -148,7 +149,7 @@ const CityDescriptions = ({
             <h2>Safety </h2>
             <p>{safety}</p>
           </div>
-          <img src="/src/assets/safety.svg" />
+          <img src="/safety.svg" />
         </DescriptivelySection>
       </div>
     </MainContainer>
