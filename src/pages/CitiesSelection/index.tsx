@@ -9,7 +9,7 @@ import { useFormik } from "formik";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { array, object } from "yup";
+import { array, object, string } from "yup";
 import { config } from "../../config/config";
 import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
@@ -42,6 +42,9 @@ const CitiesSelection = () => {
       .min(config.numberOfCityOptions)
       .of(
         object()
+          .shape({
+            name: string(),
+          })
           .required("Field is required")
           .test(
             "test-city",
