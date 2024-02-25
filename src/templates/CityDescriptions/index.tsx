@@ -62,28 +62,30 @@ const CityDescriptions = ({
           <h2 style={{ width: 200 }}>
             Population amount is of {population.toLocaleString()} habitants
           </h2>
-          <PieChart
-            series={[
-              {
-                data: [
-                  {
-                    id: 0,
-                    value: male_population_amount,
-                    label: "male",
-                    color: "#1A5EC7",
-                  },
-                  {
-                    id: 1,
-                    value: female_population_amount,
-                    label: "female",
-                    color: "#d32f2f",
-                  },
-                ],
-              },
-            ]}
-            width={500}
-            height={400}
-          />
+          {male_population_amount && female_population_amount && (
+            <PieChart
+              series={[
+                {
+                  data: [
+                    {
+                      id: 0,
+                      value: male_population_amount,
+                      label: "male",
+                      color: "#1A5EC7",
+                    },
+                    {
+                      id: 1,
+                      value: female_population_amount,
+                      label: "female",
+                      color: "#d32f2f",
+                    },
+                  ],
+                },
+              ]}
+              width={500}
+              height={400}
+            />
+          )}
         </DescriptivelySection>
         <MapContainer>
           <GoogleMapReact
@@ -92,23 +94,25 @@ const CityDescriptions = ({
             defaultZoom={defaultProps.zoom}
           />
         </MapContainer>
-        <section>
-          <h2>Most popular attractions </h2>
-          <PopularAttractionsContainer>
-            {top_attractions?.map((attraction) => (
-              <AttractionCard>
-                <p>{attraction}</p>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => onLearnMoreClick(attraction)}
-                >
-                  Learn more
-                </Button>
-              </AttractionCard>
-            ))}
-          </PopularAttractionsContainer>
-        </section>
+        {top_attractions.length > 0 && (
+          <section>
+            <h2>Most popular attractions </h2>
+            <PopularAttractionsContainer>
+              {top_attractions?.map((attraction) => (
+                <AttractionCard>
+                  <p>{attraction}</p>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => onLearnMoreClick(attraction)}
+                  >
+                    Learn more
+                  </Button>
+                </AttractionCard>
+              ))}
+            </PopularAttractionsContainer>
+          </section>
+        )}
         <DescriptivelySection>
           <img src="/city_bike.svg" />
           <div>
