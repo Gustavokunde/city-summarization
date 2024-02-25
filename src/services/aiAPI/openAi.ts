@@ -31,7 +31,7 @@ export const getCitiesDetails = async (
             cities
           )} based in the ${
             config.countryCode
-          } in a json format with cities splitted into an array adding those properties: ${JSON.stringify(
+          } in a json format with cities splitted into an array informing those new properties: ${JSON.stringify(
             otherCityInformation
           )} `,
         },
