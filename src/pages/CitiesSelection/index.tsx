@@ -143,11 +143,13 @@ const CitiesSelection = () => {
           </>
         ) : (
           <>
-            {citiesDetails.length > 0 ?? (
+            {citiesDetails.length > 0 ? (
               <h2>
                 Choose one of the selected cities to understand further more
                 from them
               </h2>
+            ) : (
+              <></>
             )}
             <div>
               {citiesDetails?.map((city) => (

@@ -2,7 +2,9 @@ import { createContext, useContext, useState } from "react";
 
 const ErrorContext = createContext({
   error: "",
-  handleError: (errorMessage: string) => {},
+  handleError: (errorMessage: string) => {
+    console.log(errorMessage);
+  },
   resetError: () => {},
 });
 
