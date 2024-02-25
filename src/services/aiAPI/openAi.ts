@@ -1,4 +1,6 @@
 import OpenAI from "openai";
+import { config } from "../../config/config";
+import { CityDetails } from "../../store/cities/cities";
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_APP_AI_API_KEY, // only for test purpose,
@@ -6,25 +8,30 @@ const openai = new OpenAI({
 });
 
 const otherCityInformation = [
-  "area",
-  "top attractions",
+  "top_attractions in array format",
   "climate",
   "cuisine",
-  "culture and history",
+  "culture_history",
+  "male_population_amount",
+  "female_population_amount",
   "transportation",
   "safety",
-  "local tips and recommendations",
+  "local_tips",
 ];
 
-export const getCitiesDetails = async (cities: string[]) => {
+export const getCitiesDetails = async (
+  cities: string[]
+): Promise<CityDetails[]> => {
   return new Promise(async (resolve, reject) => {
     const completion = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: `Bring me some important information and important facts summarized based on the values provided for each city ${JSON.stringify(
+          content: `Provide the following information to be shown in a land page for each of those cities ${JSON.stringify(
             cities
-          )} in a json format with cities split into an array with all properties provided, a brief description and also this other information in an html string format to be shown in a landpage : ${JSON.stringify(
+          )} based in the ${
+            config.countryCode
+          } in a json format with cities splitted into an array adding those properties: ${JSON.stringify(
             otherCityInformation
           )} `,
         },
@@ -35,7 +42,10 @@ export const getCitiesDetails = async (cities: string[]) => {
     });
 
     const content = completion.choices[0].message.content;
-    if (content) return resolve(JSON.parse(content).cities);
-    else return reject();
+
+    if (content) {
+      const contentParsed = JSON.parse(content);
+      return resolve(contentParsed.cities || contentParsed);
+    } else return reject();
   });
 };

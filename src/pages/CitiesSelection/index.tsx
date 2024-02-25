@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { array, object } from "yup";
@@ -22,9 +22,6 @@ import {
 
 const CitiesSelection = () => {
   const [citiesList, setCitiesList] = useState<Array<CityDetails>>([]);
-  const [focusedFieldIndex, setFocusedFieldIndex] = useState<number | null>(
-    null
-  );
 
   const [fetchingCities, setFetchingCities] = useState(false);
 
@@ -35,9 +32,9 @@ const CitiesSelection = () => {
 
   const formik = useFormik({
     initialValues:
-      citiesDetails.length > 0
+      citiesDetails?.length > 0
         ? citiesDetails
-        : [...Array(config.numberOfCityOptions).fill({})],
+        : [...Array(config.numberOfCityOptions).fill(undefined)],
 
     validateOnChange: true,
     validateOnMount: false,
@@ -52,8 +49,9 @@ const CitiesSelection = () => {
             function (value, { parent }) {
               if (value) {
                 return (
-                  parent.filter((city: CityDetails) => city.name === value.name)
-                    .length === 1
+                  parent.filter(
+                    (city: CityDetails) => city?.name === value?.name
+                  )?.length === 1
                 );
               } else return true;
             }
@@ -63,25 +61,10 @@ const CitiesSelection = () => {
       setFetchingCities(true);
       getCitiesDetails(values).then((response) => {
         setFetchingCities(false);
-        console.log(response);
         dispatch(addCities(response));
       });
     },
   });
-
-  useEffect(() => {
-    const inputValue =
-      formik.values[focusedFieldIndex as keyof typeof formik.values];
-    if (focusedFieldIndex !== null && inputValue)
-      findCitiesByName(inputValue)
-        .then((cities) => {
-          setCitiesList(cities);
-        })
-        .catch((err) => console.log(err));
-  }, [
-    focusedFieldIndex,
-    formik.values[focusedFieldIndex as keyof typeof formik.values],
-  ]);
 
   const debounceInputSearch = useCallback(
     debounce((value) => {
@@ -94,8 +77,11 @@ const CitiesSelection = () => {
     []
   );
 
-  const onInputBlur = useCallback(() => {
-    setCitiesList([]);
+  const onInputFocus = useCallback((value: CityDetails) => {
+    if (value) debounceInputSearch(value.name);
+    else {
+      setCitiesList([]);
+    }
   }, []);
 
   return (
@@ -108,13 +94,14 @@ const CitiesSelection = () => {
                 disablePortal
                 key={index}
                 options={citiesList}
-                getOptionLabel={(city) => city.name || ""}
+                getOptionLabel={(option) => option?.name || city?.name}
                 sx={{ width: 300 }}
-                defaultValue={city.name}
                 onChange={(_, value) =>
                   formik.setFieldValue(index.toString(), value)
                 }
+                defaultValue={city?.name}
                 onInputChange={(_, value) => debounceInputSearch(value)}
+                isOptionEqualToValue={() => true}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -123,11 +110,10 @@ const CitiesSelection = () => {
                     }
                     onBlurCapture={formik.handleBlur}
                     error={formik.touched[index] && !!formik.errors[index]}
+                    onFocus={() => onInputFocus(formik.values[index])}
                     id={index.toString()}
                     name={index.toString()}
                     label="Type a city in the US"
-                    onFocus={() => setFocusedFieldIndex(index)}
-                    onBlur={onInputBlur}
                   />
                 )}
               />
@@ -142,15 +128,15 @@ const CitiesSelection = () => {
       </FormSection>
       <CitiesChosenSection>
         {fetchingCities
-          ? formik.values.map(() => (
+          ? formik.values?.map(() => (
               <Skeleton variant="rectangular" width={200} height={100} />
             ))
-          : citiesDetails.map((city) => (
+          : citiesDetails?.map((city) => (
               <Button
-                key={city.name}
-                onClick={() => navigate(`city/${city.name}`)}
+                key={city?.name}
+                onClick={() => navigate(`city/${city?.name}`)}
               >
-                {city.name}
+                {city?.name}
               </Button>
             ))}
       </CitiesChosenSection>

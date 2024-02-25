@@ -16,6 +16,15 @@ export interface CityDetails {
   population: number;
   region: string;
   regionCode: string;
+  male_population_amount: number;
+  female_population_amount: number;
+  top_attractions: Array<string>;
+  climate: string;
+  cuisine: string;
+  culture_history: string;
+  transportation: string;
+  safety: string;
+  local_tips: Array<string>;
 }
 
 const cityReducer = (
