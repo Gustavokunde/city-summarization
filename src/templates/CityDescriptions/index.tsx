@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import GoogleMapReact from "google-map-react";
+import ReactGA from "react-ga";
 import { CityDetails } from "../../store/cities/cities";
 
 import {
@@ -39,6 +40,13 @@ const CityDescriptions = ({
   };
 
   const onLearnMoreClick = (search: string) => {
+    //included analytic tracking for button click
+    ReactGA.event({
+      category: "Button",
+      action: "Click",
+      label: "Learn more about" + search,
+    });
+
     window.open(`http://www.google.com/search?q=${search}`);
   };
 
