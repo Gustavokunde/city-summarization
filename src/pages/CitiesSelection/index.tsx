@@ -9,9 +9,9 @@ import { useFormik } from "formik";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { array, object, string } from "yup";
 import Card from "../../components/Card";
 import { config } from "../../config/config";
+import { useError } from "../../hooks/useError";
 import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
 import { addCities, CitiesState, CityDetails } from "../../store/cities/cities";
@@ -20,12 +20,12 @@ import {
   FormSection,
   SubmitButtonContent,
 } from "./styles";
+import { validationSchema } from "./validationSchema";
 
 const CitiesSelection = () => {
   const [citiesList, setCitiesList] = useState<Array<CityDetails>>([]);
-
   const [fetchingCities, setFetchingCities] = useState(false);
-
+  const { handleError } = useError();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,34 +39,17 @@ const CitiesSelection = () => {
 
     validateOnChange: true,
     validateOnMount: false,
-    validationSchema: array()
-      .min(config.numberOfCityOptions)
-      .of(
-        object()
-          .shape({
-            name: string(),
-          })
-          .required("Field is required")
-          .test(
-            "test-city",
-            "City name must be unique",
-            function (value, { parent }) {
-              if (value) {
-                return (
-                  parent.filter(
-                    (city: CityDetails) => city?.name === value?.name
-                  )?.length === 1
-                );
-              } else return true;
-            }
-          )
-      ),
+    validationSchema,
     onSubmit: (values) => {
       setFetchingCities(true);
-      getCitiesDetails(values).then((response) => {
-        setFetchingCities(false);
-        dispatch(addCities(response));
-      });
+      getCitiesDetails(values)
+        .then((response) => {
+          setFetchingCities(false);
+          dispatch(addCities(response));
+        })
+        .catch((err) => {
+          handleError(err);
+        });
     },
   });
 
@@ -76,7 +59,7 @@ const CitiesSelection = () => {
         .then((cities) => {
           setCitiesList(cities);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => handleError(err));
     }, 300),
     []
   );
@@ -148,16 +131,24 @@ const CitiesSelection = () => {
             </h2>
             <div>
               {formik.values?.map(() => (
-                <Skeleton variant="rectangular" width={200} height={50} />
+                <Skeleton
+                  variant="rectangular"
+                  width={200}
+                  height={200}
+                  animation="wave"
+                  sx={{ borderTopLeftRadius: 24, borderBottomRight: 24 }}
+                />
               ))}
             </div>
           </>
         ) : (
           <>
-            <h2>
-              Choose one of the selected cities to understand further more from
-              them
-            </h2>
+            {citiesDetails.length > 0 ?? (
+              <h2>
+                Choose one of the selected cities to understand further more
+                from them
+              </h2>
+            )}
             <div>
               {citiesDetails?.map((city) => (
                 <Card>

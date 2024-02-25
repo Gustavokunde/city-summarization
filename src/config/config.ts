@@ -1,7 +1,7 @@
 // can be replaced by an api integration
 export const config = {
   countryCode: "US",
-  numberOfCityOptions: 10,
+  numberOfCityOptions: 5,
   cityDetails: [
     "population",
     "image from unsplash",

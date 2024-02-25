@@ -13,6 +13,8 @@ export const CardContent = styled.div`
   width: 200px;
   height: 200px;
   background: #1a5ec7;
+  padding: 12px;
+  box-sizing: border-box;
   font-size: 18px;
   font-weight: bold;
 `;

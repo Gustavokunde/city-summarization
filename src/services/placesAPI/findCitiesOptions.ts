@@ -19,7 +19,9 @@ export function findCitiesByName(name: string): Promise<CityDetails[]> {
       })
       .catch((err) => {
         console.log(err);
-        return reject(err);
+        return reject(
+          "An error ocurred, please try again later " + err.toString()
+        );
       });
   });
 }

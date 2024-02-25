@@ -46,6 +46,9 @@ export const getCitiesDetails = async (
     if (content) {
       const contentParsed = JSON.parse(content);
       return resolve(contentParsed.cities || contentParsed);
-    } else return reject();
+    } else
+      return reject(
+        "An error occurred and we couldn't find any of the provided cities"
+      );
   });
 };
