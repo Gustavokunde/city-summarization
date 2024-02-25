@@ -36,7 +36,7 @@ export const getCitiesDetails = async (
           )} `,
         },
       ],
-      temperature: 0.5,
+      temperature: 0.7,
       max_tokens: 4000,
       model: "gpt-3.5-turbo",
     });
@@ -46,6 +46,9 @@ export const getCitiesDetails = async (
     if (content) {
       const contentParsed = JSON.parse(content);
       return resolve(contentParsed.cities || contentParsed);
-    } else return reject();
+    } else
+      return reject(
+        "An error occurred and we couldn't find any of the provided cities"
+      );
   });
 };

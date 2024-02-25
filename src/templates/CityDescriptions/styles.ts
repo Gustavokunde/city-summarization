@@ -15,7 +15,7 @@ export const MainContainer = styled.div`
   > img {
     z-index: 1;
     position: relative;
-    max-width: 100vh;
+    max-width: 100%;
     margin-top: -50px;
   }
 
@@ -24,6 +24,19 @@ export const MainContainer = styled.div`
     margin-bottom: 100px;
     position: relative;
     z-index: 2;
+    @media (max-width: 920px) {
+      margin-top: -100px;
+      font-size: 32px;
+      margin-bottom: 80px;
+    }
+    @media (max-width: 750px) {
+      margin-top: -90px;
+      margin-bottom: 50px;
+    }
+    @media (max-width: 450px) {
+      margin-top: -50px;
+      margin-bottom: 20px;
+    }
   }
 `;
 
@@ -43,13 +56,23 @@ export const PopularAttractionsContainer = styled.div`
   justify-content: center;
 `;
 
-export const DescriptivelySection = styled.section`
+export const DescriptivelySection = styled.section<{
+  oppositeComponent?: boolean;
+}>`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  flex-wrap: wrap;
   margin: 24px 0px;
+
+  h2 {
+    margin-bottom: 0;
+    max-width: 200px;
+  }
+
   img {
-    max-width: 300px;
+    width: 300px;
+    max-width: 100%;
   }
 
   div {
@@ -67,21 +90,12 @@ export const DescriptivelySection = styled.section`
       text-align: left;
     }
   }
-`;
+  @media (max-width: 1200px) {
+    div {
+      max-width: 100%;
+    }
 
-export const AttractionCard = styled.div`
-  border-top-left-radius: 24px;
-  border-bottom-right-radius: 24px;
-  color: #fff;
-  max-width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  flex-wrap: wrap;
-  width: 200px;
-  height: 200px;
-  background: #1a5ec7;
-  font-size: 18px;
-  font-weight: bold;
+    flex-direction: ${(props) =>
+      props.oppositeComponent ? "column-reverse" : "column"};
+  }
 `;

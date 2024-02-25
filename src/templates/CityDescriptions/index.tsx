@@ -2,10 +2,10 @@ import { Button } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import GoogleMapReact from "google-map-react";
 import ReactGA from "react-ga";
+import Card from "../../components/Card";
 import { CityDetails } from "../../store/cities/cities";
 
 import {
-  AttractionCard,
   DescriptivelySection,
   MainContainer,
   MapContainer,
@@ -59,31 +59,35 @@ const CityDescriptions = ({
       <div>
         <DescriptivelySection>
           <img src="/city_people.svg" />
-          <h2 style={{ width: 200 }}>
+          <h2>
             Population amount is of {population.toLocaleString()} habitants
           </h2>
-          <PieChart
-            series={[
-              {
-                data: [
-                  {
-                    id: 0,
-                    value: male_population_amount,
-                    label: "male",
-                    color: "#1A5EC7",
-                  },
-                  {
-                    id: 1,
-                    value: female_population_amount,
-                    label: "female",
-                    color: "#d32f2f",
-                  },
-                ],
-              },
-            ]}
-            width={500}
-            height={400}
-          />
+          {male_population_amount && female_population_amount ? (
+            <PieChart
+              series={[
+                {
+                  data: [
+                    {
+                      id: 0,
+                      value: male_population_amount,
+                      label: "male",
+                      color: "#1A5EC7",
+                    },
+                    {
+                      id: 1,
+                      value: female_population_amount,
+                      label: "female",
+                      color: "#d32f2f",
+                    },
+                  ],
+                },
+              ]}
+              width={500}
+              height={400}
+            />
+          ) : (
+            <></>
+          )}
         </DescriptivelySection>
         <MapContainer>
           <GoogleMapReact
@@ -92,24 +96,26 @@ const CityDescriptions = ({
             defaultZoom={defaultProps.zoom}
           />
         </MapContainer>
-        <section>
-          <h2>Most popular attractions </h2>
-          <PopularAttractionsContainer>
-            {top_attractions?.map((attraction) => (
-              <AttractionCard>
-                <p>{attraction}</p>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => onLearnMoreClick(attraction)}
-                >
-                  Learn more
-                </Button>
-              </AttractionCard>
-            ))}
-          </PopularAttractionsContainer>
-        </section>
-        <DescriptivelySection>
+        {top_attractions.length > 0 && (
+          <section>
+            <h2>Most popular attractions </h2>
+            <PopularAttractionsContainer>
+              {top_attractions?.map((attraction) => (
+                <Card>
+                  <p>{attraction}</p>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => onLearnMoreClick(attraction)}
+                  >
+                    Learn more
+                  </Button>
+                </Card>
+              ))}
+            </PopularAttractionsContainer>
+          </section>
+        )}
+        <DescriptivelySection oppositeComponent={true}>
           <img src="/city_bike.svg" />
           <div>
             <h2>Transportation </h2>
@@ -123,7 +129,7 @@ const CityDescriptions = ({
           </div>
           <img src="/climate.svg" />
         </DescriptivelySection>
-        <DescriptivelySection>
+        <DescriptivelySection oppositeComponent={true}>
           <img src="/cuisine.svg" />
           <div>
             <h2>Cuisine </h2>
@@ -137,10 +143,10 @@ const CityDescriptions = ({
           </div>
           <img src="/history.svg" />
         </DescriptivelySection>
-        <DescriptivelySection>
+        <DescriptivelySection oppositeComponent={true}>
           <img src="/reading.svg" />
           <div>
-            <h2>Local tips and recommendantions </h2>
+            <h2>Local tips and recommendations </h2>
             {typeof local_tips === "string" ? (
               <p>{local_tips}</p>
             ) : (
