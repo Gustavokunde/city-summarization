@@ -50,7 +50,7 @@ const CityDescriptions = ({
       <div>
         <DescriptivelySection>
           <img src="/src/assets/city_people.svg" />
-          <h2>
+          <h2 style={{ width: 200 }}>
             Population amount is of {population.toLocaleString()} habitants
           </h2>
           <PieChart
