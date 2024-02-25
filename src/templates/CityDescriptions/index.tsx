@@ -59,7 +59,7 @@ const CityDescriptions = ({
       <div>
         <DescriptivelySection>
           <img src="/city_people.svg" />
-          <h2 style={{ width: 200 }}>
+          <h2>
             Population amount is of {population.toLocaleString()} habitants
           </h2>
           {male_population_amount && female_population_amount && (
@@ -113,7 +113,7 @@ const CityDescriptions = ({
             </PopularAttractionsContainer>
           </section>
         )}
-        <DescriptivelySection>
+        <DescriptivelySection oppositeComponent={true}>
           <img src="/city_bike.svg" />
           <div>
             <h2>Transportation </h2>
@@ -127,7 +127,7 @@ const CityDescriptions = ({
           </div>
           <img src="/climate.svg" />
         </DescriptivelySection>
-        <DescriptivelySection>
+        <DescriptivelySection oppositeComponent={true}>
           <img src="/cuisine.svg" />
           <div>
             <h2>Cuisine </h2>
@@ -141,7 +141,7 @@ const CityDescriptions = ({
           </div>
           <img src="/history.svg" />
         </DescriptivelySection>
-        <DescriptivelySection>
+        <DescriptivelySection oppositeComponent={true}>
           <img src="/reading.svg" />
           <div>
             <h2>Local tips and recommendantions </h2>
