@@ -132,11 +132,15 @@ const CityDescriptions = ({
           <img src="/src/assets/reading.svg" />
           <div>
             <h2>Local tips and recommendantions </h2>
-            <ul>
-              {local_tips.map((tip) => (
-                <li>{tip}</li>
-              ))}
-            </ul>
+            {typeof local_tips === "string" ? (
+              <p>{local_tips}</p>
+            ) : (
+              <ul>
+                {local_tips.map((tip) => (
+                  <li>{tip}</li>
+                ))}
+              </ul>
+            )}
           </div>
         </DescriptivelySection>
         <DescriptivelySection>
