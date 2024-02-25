@@ -2,10 +2,10 @@ import { Button } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import GoogleMapReact from "google-map-react";
 import ReactGA from "react-ga";
+import Card from "../../components/Card";
 import { CityDetails } from "../../store/cities/cities";
 
 import {
-  AttractionCard,
   DescriptivelySection,
   MainContainer,
   MapContainer,
@@ -62,7 +62,7 @@ const CityDescriptions = ({
           <h2>
             Population amount is of {population.toLocaleString()} habitants
           </h2>
-          {male_population_amount && female_population_amount && (
+          {male_population_amount && female_population_amount ? (
             <PieChart
               series={[
                 {
@@ -85,6 +85,8 @@ const CityDescriptions = ({
               width={500}
               height={400}
             />
+          ) : (
+            <></>
           )}
         </DescriptivelySection>
         <MapContainer>
@@ -99,7 +101,7 @@ const CityDescriptions = ({
             <h2>Most popular attractions </h2>
             <PopularAttractionsContainer>
               {top_attractions?.map((attraction) => (
-                <AttractionCard>
+                <Card>
                   <p>{attraction}</p>
                   <Button
                     variant="contained"
@@ -108,7 +110,7 @@ const CityDescriptions = ({
                   >
                     Learn more
                   </Button>
-                </AttractionCard>
+                </Card>
               ))}
             </PopularAttractionsContainer>
           </section>
@@ -144,7 +146,7 @@ const CityDescriptions = ({
         <DescriptivelySection oppositeComponent={true}>
           <img src="/reading.svg" />
           <div>
-            <h2>Local tips and recommendantions </h2>
+            <h2>Local tips and recommendations </h2>
             {typeof local_tips === "string" ? (
               <p>{local_tips}</p>
             ) : (

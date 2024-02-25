@@ -8,6 +8,15 @@ export const FormSection = styled.section`
     gap: 20px;
     flex-wrap: wrap;
   }
+  @media (max-width: 924px) {
+    h1 {
+      font-size: 32px;
+    }
+
+    h2 {
+      font-size: 24px;
+    }
+  }
 `;
 
 export const SubmitButtonContent = styled.div`
@@ -16,8 +25,16 @@ export const SubmitButtonContent = styled.div`
 
 export const CitiesChosenSection = styled.section`
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 20px;
+
+  > div {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
 `;

@@ -10,6 +10,7 @@ import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { array, object, string } from "yup";
+import Card from "../../components/Card";
 import { config } from "../../config/config";
 import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
@@ -90,6 +91,10 @@ const CitiesSelection = () => {
   return (
     <>
       <FormSection>
+        <h1>
+          Include {config.numberOfCityOptions} cities in the United States to
+          get the best provided information from an AI tool
+        </h1>
         <form onSubmit={formik.handleSubmit}>
           {formik.values.map((city, index) => {
             return (
@@ -123,25 +128,53 @@ const CitiesSelection = () => {
             );
           })}
           <SubmitButtonContent>
-            <Button type="submit" disabled={fetchingCities}>
+            <Button
+              type="submit"
+              disabled={fetchingCities}
+              variant="contained"
+              color="primary"
+            >
               Enviar
             </Button>
           </SubmitButtonContent>
         </form>
       </FormSection>
       <CitiesChosenSection>
-        {fetchingCities
-          ? formik.values?.map(() => (
-              <Skeleton variant="rectangular" width={200} height={100} />
-            ))
-          : citiesDetails?.map((city) => (
-              <Button
-                key={city?.name}
-                onClick={() => navigate(`city/${city?.name}`)}
-              >
-                {city?.name}
-              </Button>
-            ))}
+        {fetchingCities ? (
+          <>
+            <h2>
+              Please wait, we are working in finding very relevant information
+              about the chosen cities
+            </h2>
+            <div>
+              {formik.values?.map(() => (
+                <Skeleton variant="rectangular" width={200} height={50} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <h2>
+              Choose one of the selected cities to understand further more from
+              them
+            </h2>
+            <div>
+              {citiesDetails?.map((city) => (
+                <Card>
+                  <p>{city?.name}</p>
+                  <Button
+                    key={city?.name}
+                    onClick={() => navigate(`city/${city?.name}`)}
+                    color="error"
+                    variant="contained"
+                  >
+                    find out more
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          </>
+        )}
       </CitiesChosenSection>
     </>
   );
