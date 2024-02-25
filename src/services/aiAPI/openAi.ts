@@ -3,12 +3,12 @@ import { config } from "../../config/config";
 import { CityDetails } from "../../store/cities/cities";
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_APP_AI_API_KEY, // only for test purpose,
+  apiKey: import.meta.env.VITE_APP_AI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
 const otherCityInformation = [
-  "top_attractions in array format",
+  "most popular attractions in property top_attractions in array format",
   "climate",
   "cuisine",
   "culture_history",
