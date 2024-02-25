@@ -14,4 +14,5 @@ export const config = {
     "transportation",
     "safety",
   ],
+  geodbURL: "https://wft-geo-db.p.rapidapi.com/v1",
 };

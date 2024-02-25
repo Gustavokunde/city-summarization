@@ -6,7 +6,13 @@ export function findCitiesByName(name: string): Promise<CityDetails[]> {
   return new Promise(async (resolve, reject) => {
     await axios
       .get(
-        `https://geodb-free-service.wirefreethought.com/v1/geo/countries/${config.countryCode}/places?limit=5&offset=0&types=CITY&namePrefix=${name}`
+        `${config.geodbURL}/geo/countries/${config.countryCode}/places?limit=5&offset=0&types=CITY&namePrefix=${name}`,
+        {
+          headers: {
+            "X-RapidAPI-Key": import.meta.env.VITE_APP_RAPID_API_KEY,
+            "X-RapidAPI-Host": import.meta.env.VITE_RAPID_HOST,
+          },
+        }
       )
       .then((res) => {
         return resolve(res.data.data as unknown as CityDetails[]);
