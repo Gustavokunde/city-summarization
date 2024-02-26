@@ -52,7 +52,7 @@ const CityDescriptions = ({
 
   return (
     <MainContainer>
-      <img src="/background_city.svg" />
+      <img src="/background_city.png" />
       <h1>
         {name} - {region}/{regionCode}
       </h1>

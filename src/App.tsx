@@ -21,7 +21,7 @@ const router = createBrowserRouter([
 
 function App() {
   useEffect(() => loadGoogleAnalytics(), []);
-  const { error } = useError();
+  const { error, resetError } = useError();
   ReactGA.initialize(import.meta.env.VITE_APP_TRACKING_ANALYTICS_ID);
 
   useEffect(() => {
@@ -30,7 +30,13 @@ function App() {
   }, []);
   return (
     <>
-      {error ? <Alert severity="error">{error}</Alert> : <></>}
+      {error ? (
+        <Alert severity="error" onClick={resetError}>
+          {error}
+        </Alert>
+      ) : (
+        <></>
+      )}
       <RouterProvider router={router} />
     </>
   );
