@@ -54,7 +54,7 @@ const CitiesSelection = () => {
     debounce((value) => {
       findCitiesByName(value, params)
         .then((cities) => {
-          setCitiesList(cities);
+          setCitiesList(cities || []);
         })
         .catch((err) => handleError(err));
     }, 300),
@@ -63,7 +63,7 @@ const CitiesSelection = () => {
 
   useEffect(() => {
     if (formik.values.length === 0 && params?.numberOfCityOptions)
-      formik.setValues([...Array(params?.numberOfCityOptions).fill(undefined)]);
+      formik.setValues([...Array(params?.numberOfCityOptions).fill(null)]);
   }, [params?.numberOfCityOptions]);
 
   const onInputFocus = useCallback((value: CityDetails) => {
@@ -72,6 +72,8 @@ const CitiesSelection = () => {
       setCitiesList([]);
     }
   }, []);
+
+  console.log(citiesList);
 
   return (
     <>
@@ -134,8 +136,9 @@ const CitiesSelection = () => {
               about the chosen cities
             </h2>
             <div>
-              {formik.values?.map(() => (
+              {formik.values?.map((_, index) => (
                 <Skeleton
+                  key={_?.name + index}
                   variant="rectangular"
                   width={200}
                   height={200}
@@ -156,8 +159,8 @@ const CitiesSelection = () => {
               <></>
             )}
             <div>
-              {citiesDetails?.map((city) => (
-                <Card>
+              {citiesDetails?.map((city, index) => (
+                <Card key={city?.name + index}>
                   <p>{city?.name}</p>
                   <Button
                     key={city?.name}
