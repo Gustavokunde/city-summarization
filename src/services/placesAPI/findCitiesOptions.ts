@@ -1,12 +1,15 @@
 import axios from "axios";
-import { config } from "../../config/config";
 import { CityDetails } from "../../store/cities/cities";
+import { Params } from "../params";
 
-export function findCitiesByName(name: string): Promise<CityDetails[]> {
+export function findCitiesByName(
+  name: string,
+  config: Params | null
+): Promise<CityDetails[]> {
   return new Promise(async (resolve, reject) => {
     await axios
       .get(
-        `${config.geodbURL}/geo/countries/${config.countryCode}/places?limit=5&offset=0&types=CITY&namePrefix=${name}`,
+        `${config?.geodbURL}/geo/countries/${config?.countryCode}/places?limit=5&offset=0&types=CITY&namePrefix=${name}`,
         {
           headers: {
             "X-RapidAPI-Key": import.meta.env.VITE_APP_RAPID_API_KEY,
@@ -18,7 +21,6 @@ export function findCitiesByName(name: string): Promise<CityDetails[]> {
         return resolve(res.data.data as unknown as CityDetails[]);
       })
       .catch((err) => {
-        console.log(err);
         return reject(
           "An error ocurred, please try again later " + err.toString()
         );
