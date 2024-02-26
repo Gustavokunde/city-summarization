@@ -15,12 +15,12 @@ const router = createBrowserRouter([
     element: <CityDetails />,
   },
   {
-    path: "/",
-    element: <CitiesSelection />,
-  },
-  {
     path: "params",
     element: <Params />,
+  },
+  {
+    path: "/",
+    element: <CitiesSelection />,
   },
 ]);
 
