@@ -24,7 +24,7 @@ Also I made use of some tools and libraries that are listed below.
 # Usage
 There is the home page, where user can type a x number of valid cities in the US. 
 After those values are typed, they can see a landing page for each city based in a template;
-To change the number of cities to be chosen and also some others configs, there is an option to access a page through https://city-summarization.onrender.com/params. There is a simple API created here https://github.com/Gustavokunde/city-summarization-api that controls those params values in a mongoDB database.
+To change the number of cities to be chosen and also some others configs, there is an option to access a page through https://city-summarization.onrender.com/config/params. There is a simple API created here https://github.com/Gustavokunde/city-summarization-api that controls those params values in a mongoDB database.
 There is tracking of information on landing pages and as well on some button clicks to analyze user behavior with Google Analytics and in a way to make A/B tests in future if needed.
 To make the persist of the values, so we can enhance the user experience, I am storing the values using redux + redux persist.
 There are some helper hooks as useError to handle error messages and also useParams to get params from the BFF;
