@@ -19,8 +19,8 @@ export const validationSchema = (config: Params | null) =>
               return (
                 parent?.filter(
                   (city: CityDetails) =>
-                    city.name && value.name && city?.name === value?.name
-                )?.length !== 1
+                    city?.name && value?.name && city?.name === value?.name
+                )?.length === 1
               );
             } else return true;
           }
