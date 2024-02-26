@@ -1,6 +1,6 @@
 import OpenAI from "openai";
-import { config } from "../../config/config";
 import { CityDetails } from "../../store/cities/cities";
+import { Params } from "../params";
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_APP_AI_API_KEY,
@@ -20,7 +20,8 @@ const otherCityInformation = [
 ];
 
 export const getCitiesDetails = async (
-  cities: string[]
+  cities: unknown,
+  config: Params | null
 ): Promise<CityDetails[]> => {
   return new Promise(async (resolve, reject) => {
     const completion = await openai.chat.completions.create({
@@ -30,7 +31,7 @@ export const getCitiesDetails = async (
           content: `Provide the following information to be shown in a land page for each of those cities ${JSON.stringify(
             cities
           )} based in the ${
-            config.countryCode
+            config?.countryCode
           } in a json format with cities splitted into an array adding those properties: ${JSON.stringify(
             otherCityInformation
           )} `,

@@ -6,12 +6,12 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Card from "../../components/Card";
-import { config } from "../../config/config";
 import { useError } from "../../hooks/useError";
+import { UseParams } from "../../hooks/useParams";
 import { getCitiesDetails } from "../../services/aiAPI/openAi";
 import { findCitiesByName } from "../../services/placesAPI/findCitiesOptions";
 import { addCities, CitiesState, CityDetails } from "../../store/cities/cities";
@@ -25,24 +25,21 @@ import { validationSchema } from "./validationSchema";
 const CitiesSelection = () => {
   const [citiesList, setCitiesList] = useState<Array<CityDetails>>([]);
   const [fetchingCities, setFetchingCities] = useState(false);
+  const params = UseParams();
   const { handleError } = useError();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const citiesDetails = useSelector((state: CitiesState) => state.cities);
 
   const formik = useFormik({
-    initialValues:
-      citiesDetails?.length > 0
-        ? citiesDetails
-        : [...Array(config.numberOfCityOptions).fill(undefined)],
+    initialValues: citiesDetails?.length > 0 ? citiesDetails : [],
 
     validateOnChange: true,
     validateOnMount: false,
-    validationSchema,
+    validationSchema: validationSchema(params),
     onSubmit: (values) => {
       setFetchingCities(true);
-      getCitiesDetails(values)
+      getCitiesDetails(values, params)
         .then((response) => {
           setFetchingCities(false);
           dispatch(addCities(response));
@@ -55,14 +52,19 @@ const CitiesSelection = () => {
 
   const debounceInputSearch = useCallback(
     debounce((value) => {
-      findCitiesByName(value)
+      findCitiesByName(value, params)
         .then((cities) => {
           setCitiesList(cities);
         })
         .catch((err) => handleError(err));
     }, 300),
-    []
+    [params]
   );
+
+  useEffect(() => {
+    if (formik.values.length === 0 && params?.numberOfCityOptions)
+      formik.setValues([...Array(params?.numberOfCityOptions).fill(undefined)]);
+  }, [params?.numberOfCityOptions]);
 
   const onInputFocus = useCallback((value: CityDetails) => {
     if (value) debounceInputSearch(value.name);
@@ -75,7 +77,7 @@ const CitiesSelection = () => {
     <>
       <FormSection>
         <h1>
-          Include {config.numberOfCityOptions} cities in the United States to
+          Include {params?.numberOfCityOptions} cities in the United States to
           get the best provided information from an AI tool
         </h1>
         <form onSubmit={formik.handleSubmit}>
@@ -84,14 +86,16 @@ const CitiesSelection = () => {
               <Autocomplete
                 disablePortal
                 key={index}
-                options={citiesList}
-                getOptionLabel={(option) => option?.name || city?.name}
+                options={citiesList as any}
+                getOptionLabel={(option) => (option as any)?.name || city?.name}
                 sx={{ width: 300 }}
                 onChange={(_, value) =>
                   formik.setFieldValue(index.toString(), value)
                 }
                 defaultValue={city?.name}
-                onInputChange={(_, value) => debounceInputSearch(value)}
+                onInputChange={(_, value) => {
+                  debounceInputSearch(value);
+                }}
                 isOptionEqualToValue={() => true}
                 renderInput={(params) => (
                   <TextField
