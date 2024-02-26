@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     element: <CitiesSelection />,
   },
   {
-    path: "/params",
+    path: "params",
     element: <Params />,
   },
 ]);
