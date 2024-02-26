@@ -15,10 +15,6 @@ const router = createBrowserRouter([
     element: <CityDetails />,
   },
   {
-    path: "/city/newPage",
-    element: <CityDetails />,
-  },
-  {
     path: "/config/params",
     element: <Params />,
   },
