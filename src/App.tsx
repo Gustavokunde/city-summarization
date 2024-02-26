@@ -7,6 +7,7 @@ import loadGoogleAnalytics from "./config/analyticsScript";
 import { useError } from "./hooks/useError";
 import CitiesSelection from "./pages/CitiesSelection";
 import CityDetails from "./pages/CityDetails";
+import Params from "./pages/Params";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <CitiesSelection />,
+  },
+  {
+    path: "/params",
+    element: <Params />,
   },
 ]);
 
