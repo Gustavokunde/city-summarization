@@ -4,7 +4,7 @@ This project was created to show technical points around form generation, landin
 
 In order to make this possible, I created a vite project with React.js and Typescript as well.
 
-You can check the demo here: https://city-summarization.onrender.com/
+You can check the demo here: https://city-summarization.onrender.com/. Although it's not completely working due the IA price plan used is not available.
 
 Also I made use of some tools and libraries that are listed below.  
 
